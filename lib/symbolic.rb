@@ -42,24 +42,29 @@ class Symbolic
   end
   
   def addVariable(sym)
-    var = Variable::Local.new(sym)
-    #sym = Polynomial.valueOf(Real::ONE,sym.var)
-    eval("@"<<sym<<" = Polynomial.valueOf(Real::ONE,var)")
+    create_attr("var"<<sym)
+    eval("@var"<<sym<<"= Variable::Local.new(sym)")
     create_attr(sym)
+    eval("@"<<sym<<" = Polynomial.valueOf(Real::ONE,@var"<<sym<<")")
     @vars<<@sym
-
   end
-  def polynomial(poly)
-    @polynomial = poly
+
+  def symint(sym)
+    #eval("puts @var"<<sym<<".class")
+    eval("@polynomial.integrate(@var"<<sym<<")")
   end
 end
 s=Symbolic.new
 
 s.addVariable("x")
-puts s.x
-puts s.x.class
-s.polynomial s.x.pow(5).plus(s.x.pow(2).times(Real.valueOf(6)))
-#puts s.polynomial
+#puts s.x.class
+
+s.polynomial = s.x.pow(5).plus(s.x.pow(2).times(Real.valueOf(6)))
+puts s.polynomial
+puts s.polynomial.class
+puts s.symint('x')
+
+
 
 =begin
 class Symbolic
